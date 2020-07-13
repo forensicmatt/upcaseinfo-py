@@ -24,3 +24,36 @@ class UpcaseInfo(object):
         self.build = struct.unpack("<I", buffer[24:28])[0]
         self.packmajor = struct.unpack("<H", buffer[28:30])[0]
         self.packminor = struct.unpack("<H", buffer[30:32])[0]
+
+    def to_dict(self) -> dict:
+        """Represent this object as a dictionary.
+
+        :return: The represented dictionary
+        """
+        return {
+            "len": self.len,
+            "filler": self.filler,
+            "crc": self.crc,
+            "osmajor": self.osmajor,
+            "osminor": self.osminor,
+            "build": self.build,
+            "packmajor": self.packmajor,
+            "packminor": self.packminor
+        }
+
+    def __str__(self):
+        """Defines how to represent this object as a string.
+        """
+        text = (
+            "crc: {}\n"
+            "osmajor: {}\n"
+            "osminor: {}\n"
+            "build: {}\n"
+            "packmajor: {}\n"
+            "packminor: {}"
+        ).format(
+            self.crc, self.osmajor, self.osminor,
+            self.build, self.packmajor, self.packminor
+        )
+
+        return text
