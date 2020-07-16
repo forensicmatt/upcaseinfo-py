@@ -3,6 +3,7 @@ sys.path.append("..")
 import json
 from argparse import ArgumentParser
 import logging
+from upcaseinfo.info import UpcaseInfo
 
 VERSION = "0.1.0"
 
@@ -27,6 +28,16 @@ def get_argument_parser() -> ArgumentParser:
         action="store",
         required=True,
         help="The source $UpCase:$Info file to parse."
+    )
+
+    arguments.add_argument(
+        "-f", "--format",
+        dest="format",
+        action="store",
+        choices=["text", "json"],
+        default="json",
+        required=True,
+        help="The output format."
     )
 
     arguments.add_argument(
@@ -62,6 +73,18 @@ def main():
 
     source_file = options.source
     logging.info("parsing file: {}".format(source_file))
+
+    with open(source_file, "rb") as file_handle:
+        raw_buffer = file_handle.read()
+        upcase_info = UpcaseInfo(raw_buffer)
+
+        if options.format == "json":
+            upcase_info_dict = upcase_info.to_dict()
+            print(json.dumps(upcase_info_dict, indent=2))
+        elif options.format == "text":
+            print(str(upcase_info))
+        else:
+            raise Exception("Unhandled output format: {}".format(options.format))
 
 
 if __name__ == "__main__":
